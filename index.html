@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mc gpt</title>
+  <meta
+    name="description"
+    content="A plain, free AI chat website powered by Puter.js."
+  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <div class="brand">
+          <div class="brand-mark">P</div>
+          <div>
+            <p class="brand-name">mc gpt</p>
+            <p class="brand-subtitle">ChatGPT-style UI</p>
+          </div>
+        </div>
+
+        <div class="sidebar-actions">
+          <button id="new-chat-btn" class="sidebar-button sidebar-button-primary" type="button">
+            New chat
+          </button>
+          <button id="personalize-btn" class="sidebar-button" type="button">
+            Personalize
+          </button>
+        </div>
+
+        <div class="sidebar-section">
+          <p class="sidebar-label">Chats</p>
+          <div id="chat-history" class="chat-history"></div>
+        </div>
+
+        <div class="sidebar-section sidebar-group">
+          <p class="sidebar-label">Prompt ideas</p>
+          <button class="prompt-chip" type="button" data-prompt="Write a short bio for a portfolio website.">Portfolio bio</button>
+          <button class="prompt-chip" type="button" data-prompt="Explain JavaScript promises in simple words.">Explain code</button>
+          <button class="prompt-chip" type="button" data-prompt="Give me 10 startup ideas for an AI website.">Startup ideas</button>
+        </div>
+      </div>
+
+      <div class="sidebar-bottom">
+        <button id="sign-in-btn" class="sidebar-button" type="button">Sign in with Puter</button>
+        <button id="sign-out-btn" class="sidebar-button" type="button" hidden>Sign out of Puter</button>
+        <button id="clear-btn" class="sidebar-button" type="button">Clear current chat</button>
+        <p id="auth-status" class="sidebar-note">Checking Puter connection...</p>
+        <p id="identity-note" class="sidebar-note">Preparing local session...</p>
+        <a class="sidebar-link" href="https://developer.puter.com" target="_blank" rel="noreferrer">Powered by Puter</a>
+      </div>
+    </aside>
+
+    <main class="main-shell">
+      <header class="topbar">
+        <div>
+          <p class="topbar-label">AI Assistant</p>
+          <h1>mc gpt</h1>
+        </div>
+
+        <div class="topbar-controls">
+          <div class="control-stack">
+            <label class="model-picker">
+              <span>Model</span>
+              <select id="model-select">
+                <option value="gpt-5.4-nano">GPT-5.4 Nano</option>
+              </select>
+            </label>
+            <p id="models-status" class="helper-text">Loading models...</p>
+          </div>
+          <button id="ai-vs-ai-toggle-btn" class="toolbar-button" type="button">AI vs AI</button>
+          <button id="generate-image-btn" class="toolbar-button" type="button">Generate image</button>
+          <button id="speak-last-btn" class="toolbar-button" type="button">Speak last reply</button>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <section class="chat-column">
+          <section class="chat-stage">
+            <div id="empty-state" class="empty-state">
+              <p class="empty-kicker">How can I help today?</p>
+              <h2>Ask anything</h2>
+              <p class="empty-copy">
+                This uses Puter in the browser, loads available models, saves your chats,
+                and can preview HTML code right inside the conversation.
+              </p>
+              <div class="empty-suggestions">
+                <button class="suggestion-card prompt-chip" type="button" data-prompt="Build me a landing page headline for an AI startup.">
+                  Build a headline
+                </button>
+                <button class="suggestion-card prompt-chip" type="button" data-prompt="Create a study plan for learning JavaScript in 30 days.">
+                  Make a study plan
+                </button>
+                <button class="suggestion-card prompt-chip" type="button" data-prompt="Give me SaaS app ideas I can build this month.">
+                  Generate app ideas
+                </button>
+              </div>
+            </div>
+
+            <div id="messages" class="messages" aria-live="polite"></div>
+          </section>
+
+          <section class="composer-shell">
+            <label class="composer-field" for="prompt-input">
+              <span class="sr-only">Message</span>
+              <textarea
+                id="prompt-input"
+                rows="1"
+                placeholder="Message mc gpt..."
+              ></textarea>
+            </label>
+
+            <div class="composer-footer">
+              <div class="composer-meta">
+                <p id="status-text" class="helper-text">Ready</p>
+                <p id="tts-status" class="helper-text">TTS ready</p>
+              </div>
+              <div class="composer-actions">
+                <button id="send-btn" class="send-button" type="button">Send</button>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <aside id="settings-panel" class="settings-panel">
+          <div class="settings-header">
+            <div>
+              <p class="topbar-label">Personalize</p>
+              <h2>Customize the assistant</h2>
+            </div>
+            <button id="close-settings-btn" class="toolbar-button" type="button">Close</button>
+          </div>
+
+          <label class="control-label" for="custom-instructions">
+            <span>Custom instructions</span>
+            <textarea id="custom-instructions" rows="6" placeholder="Tell the AI how you want it to act..."></textarea>
+          </label>
+
+          <label class="control-label" for="response-style-select">
+            <span>Response style</span>
+            <select id="response-style-select">
+              <option value="concise">Concise</option>
+              <option value="balanced">Balanced</option>
+              <option value="detailed">Detailed</option>
+              <option value="code-heavy">Code heavy</option>
+            </select>
+          </label>
+
+          <label class="control-label" for="creativity-select">
+            <span>Creativity</span>
+            <select id="creativity-select">
+              <option value="0.2">Focused</option>
+              <option value="0.7">Balanced</option>
+              <option value="1">Creative</option>
+            </select>
+          </label>
+
+          <label class="toggle-row" for="html-preview-toggle">
+            <input id="html-preview-toggle" type="checkbox">
+            <span>Show live preview for HTML code blocks</span>
+          </label>
+
+          <label class="toggle-row" for="self-aware-toggle">
+            <input id="self-aware-toggle" type="checkbox">
+            <span>Self-aware mode for this website and its source</span>
+          </label>
+
+          <p class="helper-text">
+            When enabled, the assistant can explain this website and, when relevant, say the
+            source is open source under the AGPL-3.0 license.
+            <a href="./licence" target="_blank" rel="noreferrer">View license</a>
+          </p>
+
+          <div class="settings-divider"></div>
+
+          <div id="ai-vs-ai-section" class="ai-vs-ai-section">
+            <div class="settings-header">
+              <div>
+                <p class="sidebar-label">AI vs AI</p>
+                <h2>Let two AIs talk</h2>
+              </div>
+            </div>
+
+            <div class="warning-card">
+              <p class="warning-title">Warning</p>
+              <p class="warning-text">
+                This mode lets two AIs you choose speak to each other in a solid conversation.
+                It can drain usage fast and may make you pay a lot if you run many turns or use
+                usage-based models.
+              </p>
+            </div>
+
+            <label class="control-label" for="ai-vs-ai-topic">
+              <span>Conversation topic</span>
+              <textarea
+                id="ai-vs-ai-topic"
+                rows="4"
+                placeholder="Give the two AIs a topic, goal, or debate..."
+              ></textarea>
+            </label>
+
+            <label class="control-label" for="ai-vs-ai-model-a">
+              <span>AI A model</span>
+              <select id="ai-vs-ai-model-a">
+                <option value="gpt-5.4-nano">Loading models...</option>
+              </select>
+            </label>
+
+            <label class="control-label" for="ai-vs-ai-model-b">
+              <span>AI B model</span>
+              <select id="ai-vs-ai-model-b">
+                <option value="inception/mercury-2">Loading models...</option>
+              </select>
+            </label>
+
+            <label class="control-label" for="ai-vs-ai-turns">
+              <span>Max turns</span>
+              <select id="ai-vs-ai-turns">
+                <option value="4">4 turns</option>
+                <option value="6" selected>6 turns</option>
+                <option value="8">8 turns</option>
+                <option value="10">10 turns</option>
+              </select>
+            </label>
+
+            <p id="ai-vs-ai-status" class="helper-text">Idle</p>
+
+            <div class="settings-actions">
+              <button id="ai-vs-ai-start-btn" class="toolbar-button" type="button">Start AI vs AI</button>
+              <button id="ai-vs-ai-stop-btn" class="toolbar-button danger-button" type="button" disabled>Interrupt</button>
+            </div>
+          </div>
+
+          <div class="settings-divider"></div>
+
+          <p class="sidebar-label">Voice</p>
+          <label class="control-label" for="voice-provider-select">
+            <span>Voice provider</span>
+            <select id="voice-provider-select">
+              <option value="">All providers</option>
+            </select>
+          </label>
+
+          <label class="control-label" for="voice-search-input">
+            <span>Search voices</span>
+            <input
+              id="voice-search-input"
+              type="text"
+              placeholder="Search Amazon, RHVoice, Microsoft..."
+            >
+          </label>
+
+          <label class="control-label" for="voice-select">
+            <span>TTS voice</span>
+            <select id="voice-select">
+              <option value="">Loading voices...</option>
+            </select>
+          </label>
+
+          <div class="settings-actions">
+            <button id="refresh-voices-btn" class="toolbar-button" type="button">Refresh voices</button>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://js.puter.com/v2/"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
